@@ -68,3 +68,11 @@
 - `requirements.txt`：依赖清单
 
 如需扩展其他分析，请在 `analysis.py` 中新增相应函数，并在 `app.py` 中接入可视化。
+
+## 开发说明
+
+全程由Trae开发完成，作者只提供prompt
+
+## 作者
+
+公众号Wechat Official Account: @LuN3cy的实验房
