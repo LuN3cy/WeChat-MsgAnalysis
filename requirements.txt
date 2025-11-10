@@ -1,0 +1,7 @@
+streamlit==1.38.0
+pandas==2.2.2
+numpy==1.26.4
+plotly==5.23.0
+jieba==0.42.1
+snownlp==0.12.3
+emoji==2.14.0
