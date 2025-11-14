@@ -265,13 +265,13 @@ with tab1:
                 values=list(sender_counts_named.values()),
                 title="双方消息占比",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
         with c2:
             # 使用原始类型字段进行类型分布
             chosen_field = "type_name"
             type_counts_over = df[chosen_field].value_counts().to_dict()
             fig = px.bar(x=list(type_counts_over.keys()), y=list(type_counts_over.values()), title="消息类型分布（原始类型）")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         # Heatmap (custom): opacity encodes intensity, 0 -> fully transparent; square cells; x-axis with gaps; transparent background
         st.markdown("**总览时间分布热力图**（透明度表示强度；正方形格；横轴留间隔；透明背景）")
@@ -366,14 +366,14 @@ with tab1:
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         # Day-of-week most & time-of-day avg
         dow_counts = metrics["dow_counts"]
         dow_names = ["周一","周二","周三","周四","周五","周六","周日"]
         dow_values = [dow_counts.get(i, 0) for i in range(7)]
         fig = px.bar(x=dow_names, y=dow_values, title="周几聊得最多（总量）")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         avg_slot = metrics["avg_slot"]
         slot_labels = metrics.get("slot_labels", [f"{i:02d}:00-{(i+1)%24:02d}:00" for i in range(24)])
@@ -402,7 +402,7 @@ with tab1:
 
         if view_choice == "柱状图":
             fig_bar = px.bar(x=slot_labels, y=vals, title="聊天时段分布（24段，平均每日）", labels={"x":"时段","y":"平均消息数"})
-            st.plotly_chart(fig_bar, use_container_width=True, config={"displaylogo": False, "modeBarButtonsToAdd": ["zoomIn2d","zoomOut2d"]})
+            st.plotly_chart(fig_bar, use_container_width=True, config={"displaylogo": False, "modeBarButtonsToAdd": ["zoomIn2d","zoomOut2d"], "toImageButtonOptions": {"format": "svg"}})
         else:
             fig_ring = go.Figure()
             fig_ring.add_trace(go.Barpolar(
@@ -431,7 +431,7 @@ with tab1:
                     radialaxis=dict(visible=False, range=[0, vmax_safe])
                 )
             )
-            st.plotly_chart(fig_ring, use_container_width=True, config={"displaylogo": False})
+            st.plotly_chart(fig_ring, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
 with tab2:
     st.subheader("双方聊天特点对比")
@@ -484,7 +484,7 @@ with tab2:
             type_dist = df.groupby(["display_sender", chosen_field]).size().reset_index(name="count")
             type_pivot2 = type_dist.pivot(index=chosen_field, columns="display_sender", values="count").fillna(0)
             fig = px.bar(type_pivot2, barmode="group", title="每人消息类型分布（原始类型）")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
     if samples_named:
         c3, c4 = st.columns(2)
         with c3:
@@ -530,7 +530,7 @@ with tab2:
                 fig_me = px.bar(x=x_vals, y=y_vals, title=f"{name_map.get('我')}→{name_map.get('对方')} 响应时间分布", labels={"x": x_label, "y": y_label})
             else:
                 fig_me = px.histogram(x=s_me_plot, nbins=bins, title=f"{name_map.get('我')}→{name_map.get('对方')} 响应时间分布", labels={"x": x_label, "y": y_label})
-            st.plotly_chart(fig_me, use_container_width=True)
+            st.plotly_chart(fig_me, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
             if s_me:
                 q = np.percentile(s_me, [25, 50, 75])
                 st.caption(f"分位数 Q1={q[0]:.1f}s, Q2(中位)={q[1]:.1f}s, Q3={q[2]:.1f}s")
@@ -553,7 +553,7 @@ with tab2:
                 fig_you = px.bar(x=x_vals2, y=y_vals2, title=f"{name_map.get('对方')}→{name_map.get('我')} 响应时间分布", labels={"x": x_label2, "y": y_label2})
             else:
                 fig_you = px.histogram(x=s_you_plot, nbins=bins, title=f"{name_map.get('对方')}→{name_map.get('我')} 响应时间分布", labels={"x": x_label2, "y": y_label2})
-            st.plotly_chart(fig_you, use_container_width=True)
+            st.plotly_chart(fig_you, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
             if s_you:
                 q2 = np.percentile(s_you, [25, 50, 75])
                 st.caption(f"分位数 Q1={q2[0]:.1f}s, Q2(中位)={q2[1]:.1f}s, Q3={q2[2]:.1f}s")
@@ -724,7 +724,7 @@ with tab3:
             except Exception:
                 pass
         st.caption("绿色虚线=会话中心（消息时间中位数）；已移除灰色边界线")
-        st.plotly_chart(fig_time, use_container_width=True)
+        st.plotly_chart(fig_time, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         # 段明细表：起止时间、持续时长、段类型、消息数（使用 conversations 源数据）
         convs = dia.get("conversations", [])
@@ -749,7 +749,7 @@ with tab3:
         # 回复间隔分布：改为直方图（更快）
         gaps = cached_compute_reply_gaps(df)
         fig_gap = px.histogram(x=gaps, nbins=80, title="回复间隔分布（直方图，快速）", labels={"x": "间隔（秒）", "y": "频次"})
-        st.plotly_chart(fig_gap, use_container_width=True)
+        st.plotly_chart(fig_gap, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         # 回复间隔分类（短/中/长）散点时间轴
         if len(gaps) >= 3:
@@ -811,7 +811,7 @@ with tab3:
                 )
             fig_gap_scatter.update_layout(title="回复间隔分类（散点时间轴，WebGL 加速）")
             fig_gap_scatter.update_yaxes(title_text="间隔（秒）")
-            st.plotly_chart(fig_gap_scatter, use_container_width=True)
+            st.plotly_chart(fig_gap_scatter, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
             centers_sorted = [c for _, c in uniq]
             try:
@@ -841,7 +841,7 @@ with tab3:
         init_counts = dia["initiator_counts"]
         init_counts_named = {name_map.get(k, k): v for k, v in init_counts.items()}
         fig = px.pie(names=list(init_counts_named.keys()), values=list(init_counts_named.values()), title="一般谁先发起对话")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
         # 自适应间隔注释：补充算法与回退逻辑
         st.caption("自适应间隔注释：阈值≈局部中位数×系数，取 max(组内最大间隔, median×系数)；当 Δt>2×阈值时强制切分；切分需前/后间隔均大于段内最大间隔。")
         c1 = st.columns(1)[0]
@@ -853,7 +853,7 @@ with tab3:
             # 改为直接基于ID映射后的显示名统计链接消息
             link_counts_named = df[df["is_link"]]["display_sender"].value_counts().to_dict()
             fig = px.bar(x=list(link_counts_named.keys()), y=list(link_counts_named.values()), title="谁分享链接更多")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
         with c2:
             probs = dia.get("link_swift_reply_prob", {})
             swift_thr = dia.get("swift_threshold_sec", float('nan'))
@@ -881,7 +881,7 @@ with tab4:
                 if top_words:
                     word_df = pd.DataFrame(top_words, columns=["词语", "频次"]).head(30)
                     fig = px.bar(word_df, x="词语", y="频次", title="高频词语(Top 30)")
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
                 else:
                     st.info("未能提取词频（可能未安装 jieba 或文本为空）。")
             with c2:
@@ -889,7 +889,7 @@ with tab4:
                 if top_emojis:
                     em_df = pd.DataFrame(top_emojis, columns=["Emoji", "频次"]).head(30)
                     fig = px.bar(em_df, x="Emoji", y="频次", title="表情/Emoji 使用频次(Top 30)")
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
                 else:
                     st.info("未检测到 Emoji（文本为空或未安装 emoji 库）。")
     else:
@@ -913,7 +913,7 @@ with tab4:
                     hover_data={"sender": True, "date": True, "text": True},
                 )
                 fig_shen.update_yaxes(visible=False, showticklabels=False)
-                st.plotly_chart(fig_shen, use_container_width=True)
+                st.plotly_chart(fig_shen, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
             else:
                 st.info("未检出符合条件的“神”短文本。")
         else:
@@ -960,7 +960,7 @@ with tab5:
         # 会话占比分布（柱状图）
         prop_df = pd.DataFrame({"会话索引": list(range(1, len(vals)+1)), "占比": vals})
         fig_props = px.bar(prop_df, x="会话索引", y="占比", title="每轮会话表情包使用占比")
-        st.plotly_chart(fig_props, use_container_width=True)
+        st.plotly_chart(fig_props, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
         # 2) 一条消息后接表情包的概率
         npb = em["next_probs"]
@@ -998,7 +998,7 @@ with tab5:
             pkg_df["src_预览"] = pkg_df["src"].apply(lambda s: (s if len(str(s)) <= 80 else str(s)[:77] + "...") )
             fig_pkg = px.bar(pkg_df, x="src_预览", y="频次", title="表情包频次排行（Top 20）")
             fig_pkg.update_layout(xaxis_title="src(截断显示)", yaxis_title="频次")
-            st.plotly_chart(fig_pkg, use_container_width=True)
+            st.plotly_chart(fig_pkg, use_container_width=True, config={"displaylogo": False, "toImageButtonOptions": {"format": "svg"}})
 
             # 可跳转链接按钮（Top 12 可点击的 src）
             clickable = [(str(src), int(cnt)) for src, cnt in top_pkgs if isinstance(src, str) and str(src).lower().startswith(("http://", "https://"))]
@@ -1029,16 +1029,16 @@ with tab6:
         """
         **语义化版本说明**：第二位为功能更新（Minor）；第三位为修复或非功能性改进（Patch）。
 
-        **1.4.2**（Patch/算法）
+        **1.4.2**
         - 清除 tslearn 算法分段实现与参数面板，统一回退为“自适应滑窗”，不影响其他已有功能与可视化。
         
-        **1.4.1**（Minor/算法）
+        **1.4.1**
         - 废除ruptures方案，更新 tslearn 方案。
 
-        **1.4.0**（Minor/算法）
+        **1.4.0**
         - 更新 ruptures 方案。
 
-        **1.3.3**（Patch/UI & Algorithm）
+        **1.3.3**
         - 移除灰色会话边界虚线，仅保留绿色会话中心参考线，降低绘制开销。
         - 恢复散点悬浮信息（说话人ID、消息类型、内容、时间点），默认展示所有散点。
         - 取消密度热力图与可视化性能选项，避免分散关注与提升交互流畅度。
@@ -1046,15 +1046,15 @@ with tab6:
         - 会话判定规则优化：若一组消息的“组内最大间隔”同时小于其首条消息的前间隔和末条消息的后间隔（两侧留白更大），该组判为一轮完整对话；相邻满足条件的段自动合并。
         - 适配快速/正常/长对话：算法对跨度更大的会话不再遗漏，统计更稳健。
 
-        **1.3.2**（Patch/UI）
+        **1.3.2**
         - 在“对话模式分析”页的 IQR 分析前新增“算法与指标说明”窗口：包含原理、动态阈值公式与回退机制、切分与段合并规则、指标释义与使用建议，便于理解与复现。
 
-        **1.3.1**（Patch/UI）
+        **1.3.1**
         - 取消“对话模式分析”时间轴上的半透明矩形叠加，减少渲染开销与视觉干扰；保留散点时间轴与会话统计。
         - 将“回复间隔分布”由直方图改为一维散点：横轴为间隔时长（秒），纵轴隐藏，更直观呈现整体间隔分布与密度。
         - 性能说明：减少形状绘制与悬停负载，交互缩放更流畅；本次改动作为 1.3.1 Patch 生效。
 
-        **1.3.0**（Minor/算法与UI）
+        **1.3.0**
         - 新增“会话轮数”切分算法为 IQR 自适应间隔（Adaptive IQR）：
           - 所有数据按 `Create_time`（时间戳）升序排列；计算相邻消息间隔 `delta_t`（秒）。
           - 动态阈值：`Q1,Q3`=25%/75%分位数；`IQR = Q3 - Q1`；`gap_threshold = Q3 + gap_multiplier × IQR`。
@@ -1070,7 +1070,7 @@ with tab6:
           - “对话模式分析”页参数切换为 `IQR倍数（gap_multiplier）`，默认 `1.5`；
           - 指标面板新增 `Q1/Q3/IQR/阈值` 展示，并说明阈值计算与回退条件。
 
-        **1.2.1**（Patch/UI）
+        **1.2.3**
         - 统一“对话模式分析”和“表情包分析”会话切分算法为“滑动窗口”。
           - 移除表情包页的密度簇参数面板，改为“窗口宽度”“平均间隔阈值”。
         - 在“回复间隔分类（散点时间轴）”下新增短/中/长间隔阈值范围展示：
@@ -1082,7 +1082,7 @@ with tab6:
           - 当聚类不稳定或样本不足时，回退为“间隔跳跃分组”算法。
         - 修复：表情包页控件与算法不一致（密度簇→滑动窗口），避免参数无效。
 
-        **1.2.0**（Minor/UI）
+        **1.2.2**
         - 修复：“回复间隔分类”被替换为频数图的问题；恢复散点时间轴。
         - 恢复“回复间隔分类”的散点图时间轴展示：
           - x=消息时间，y=回复间隔（秒），颜色区分“短/中/长”；
@@ -1093,7 +1093,7 @@ with tab6:
           - 在图下方显示分类中心值（秒）用于参考。
         - 保留“回复间隔分布（直方图）”用于整体分布查看。
 
-        **1.1.5**（Minor）
+        **1.2.1**
         - 删除“混合算法”，改用“滑动窗口算法”。
           - 定义滑动窗口（如 15 分钟内的消息视为候选组）；
           - 计算窗口内消息数与连续时间间隔的平均值；
@@ -1103,7 +1103,7 @@ with tab6:
           - “对话模式分析”页参数面板切换为“窗口宽度（分钟）”“平均间隔阈值（分钟）”；
           - 仍支持以半透明色块标注会话段，并保留中心/边界参考线。
 
-        **1.1.4**（Minor）
+        **1.2.0**
         - 新增会话切分“混合算法”：gap阈值 + 局部密度下降 + 一维簇优化（eps=gap, min_samples=2），并保留“散点对话”（仅两条消息且间隔<gap）归为一轮。
         - 支持参数：`gap(分钟)`、`滑动窗口宽度(分钟)`、`密度下降比例`，可在“对话模式”页配置。
         - UI 更新：时间轴散点图用半透明色块标示每轮会话起止；保留中心/边界虚线参考；统计新增“双人互动会话数”“单人独白会话数”。
